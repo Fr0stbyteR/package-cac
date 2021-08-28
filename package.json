@@ -1,0 +1,36 @@
+{
+  "name": "@jspatcher/package-cac",
+  "version": "1.0.0",
+  "description": "The Computer-Aided Coposition package for JSPatcher",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "webpack --mode development",
+    "build-watch": "webpack --mode development --watch --stats-children"
+  },
+  "keywords": [
+    "jspatcher"
+  ],
+  "jspatcher": {
+    "isJSPatcherPackage": true,
+    "thumbnail": "",
+    "jspatpkg": "index.jspatpkg.js"
+  },
+  "author": "Fr0stbyteR",
+  "license": "GPL-3.0-or-later",
+  "repository": "https://github.com/jspatcher/package-cac",
+  "devDependencies": {
+    "@jspatcher/jspatcher": "0.0.9",
+    "@shren/guidolib": "^1.7.3",
+    "@shren/sol": "0.0.1",
+    "@types/react": "^17.0.19",
+    "@types/react-dom": "^17.0.9",
+    "clean-webpack-plugin": "^4.0.0-alpha.0",
+    "copy-webpack-plugin": "^9.0.1",
+    "esbuild-loader": "^2.15.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "typescript": "^4.4.2",
+    "webpack": "^5.51.1",
+    "webpack-cli": "^4.7.2"
+  }
+}
