@@ -1,6 +1,6 @@
 {
   "name": "@jspatcher/package-cac",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The Computer-Aided Coposition package for JSPatcher",
   "main": "dist/index.js",
   "scripts": {
