@@ -13,13 +13,14 @@ interface InternalState {
     parser: $GuidoParser;
     ar: $ARHandler;
     gr: $GRHandler;
+    busy: boolean;
 }
 
 interface Props extends GuidoLayoutSettings {
     bgColor: string;
 }
 
-export default class GuidoView extends CacBaseObject<{}, {}, [string | number], [string[]], [], Props, DOMUIState> {
+export default class GuidoView extends CacBaseObject<{}, {}, [string | number], [string[], boolean], [], Props, DOMUIState> {
     static package = "Guido";
     static description = "Get Guido Graphic Representation from code";
     static inlets: IInletsMeta = [{
@@ -30,6 +31,9 @@ export default class GuidoView extends CacBaseObject<{}, {}, [string | number], 
     static outlets: IOutletsMeta = [{
         type: "object",
         description: "SVG codes"
+    }, {
+        type: "boolean",
+        description: "Busy state update"
     }];
     static props: IPropsMeta<Props> = {
         bgColor: {
@@ -91,9 +95,13 @@ export default class GuidoView extends CacBaseObject<{}, {}, [string | number], 
     static UI = class extends DOMUI<GuidoView> {
         state: DOMUIState = { ...this.state, children: this.object._.container ? [this.object._.container] : [], containerProps: { style: { backgroundColor: this.object.props.bgColor } } };
     };
-    _: InternalState = { guido: undefined, gmn: undefined, svgs: [], container: undefined, parser: undefined, ar: undefined, gr: undefined };
+    _: InternalState = { guido: undefined, gmn: undefined, svgs: [], container: undefined, parser: undefined, ar: undefined, gr: undefined, busy: false };
     subscribe() {
         super.subscribe();
+        const setBusy = (busy: boolean) => {
+            this._.busy = busy;
+            this.outlet(1, busy);
+        };
         const processAR = async () => {
             const { guido, parser, gmn } = this._;
             const ar = await guido.string2AR(parser, gmn);
@@ -143,15 +151,19 @@ export default class GuidoView extends CacBaseObject<{}, {}, [string | number], 
             }
         };
         const process = async () => {
+            setBusy(true);
             try {
                 await processAR();
                 await processGR();
                 await processSVG();
             } catch (error) {
                 this.error(error);
+            } finally {
+                setBusy(false);
             }
         };
         const processFromAR = async (ar: $ARHandler) => {
+            setBusy(true);
             try {
                 const { guido } = this._;
                 if (this._.gr) await guido.freeGR(this._.gr);
@@ -162,11 +174,13 @@ export default class GuidoView extends CacBaseObject<{}, {}, [string | number], 
                 await processSVG();
             } catch (error) {
                 this.error(error);
+            } finally {
+                setBusy(false);
             }
         };
         this.on("preInit", () => {
             this.inlets = 1;
-            this.outlets = 1;
+            this.outlets = 2;
         });
         this.on("postInit", async () => {
             this._.guido = await (this.env as Env).getGuido();
@@ -188,11 +202,14 @@ export default class GuidoView extends CacBaseObject<{}, {}, [string | number], 
             }
             if (Object.keys(props).filter(v => v !== "bgColor").length) {
                 if (!this._.gr) return;
+                setBusy(true);
                 try {
                     await updateGR();
                     await processSVG();
                 } catch (error) {
                     this.error(error);
+                } finally {
+                    setBusy(false);
                 }
             }
         });
