@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "webpack --mode development",
-    "build-watch": "webpack --mode development --watch --stats-children"
+    "build-watch": "webpack --mode development --watch --stats-children",
+    "prebuild": "node prebuild.js"
   },
   "keywords": [
     "jspatcher"

@@ -31,6 +31,9 @@ const config = {
         }
       },
       exclude: /node_modules/
+    }, {
+      test: /\.txt$/,
+      type: "asset/source"
     }]
   },
   plugins: [

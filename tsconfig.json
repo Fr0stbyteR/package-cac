@@ -23,7 +23,7 @@
   },
   "include": [
     "src/**/*"
-  ],
+, "local/parse.ts"  ],
   "exclude": [
     "dist",
     "node_modules"
